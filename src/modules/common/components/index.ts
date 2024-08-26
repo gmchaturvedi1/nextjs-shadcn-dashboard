@@ -8,4 +8,5 @@ export * from "./navbar";
 export * from "./sheet-menu";
 export * from "./sidebar";
 export * from "./sidebar-toggle";
+export * from "./theme-provider";
 export * from "./ui";

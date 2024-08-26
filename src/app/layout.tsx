@@ -1,3 +1,4 @@
+import { ThemeProvider } from "@/modules";
 import type { Metadata } from "next";
 import dynamic from "next/dynamic";
 import { Inter } from "next/font/google";
@@ -26,7 +27,9 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={inter.className}>
-        <AdminPanelLayout>{children}</AdminPanelLayout>
+        <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
+          <AdminPanelLayout>{children}</AdminPanelLayout>
+        </ThemeProvider>
       </body>
     </html>
   );
