@@ -1,8 +1,8 @@
 "use client";
-
-import { LayoutGrid, LogOut, User } from "lucide-react";
-import Link from "next/link";
-
+import { ExclamationTriangleIcon } from "@/components/icons";
+import { LoadingButton } from "@/components/loading-button";
+import { logout } from "@/lib/auth/actions";
+import { APP_TITLE } from "@/lib/constants";
 import {
   Avatar,
   AvatarFallback,
@@ -20,6 +20,19 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/modules";
+import { LayoutGrid, User } from "lucide-react";
+import Link from "next/link";
+import { useState } from "react";
+import { toast } from "sonner";
+
+import {
+  AlertDialog,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 
 export function UserNav() {
   return (
@@ -51,23 +64,71 @@ export function UserNav() {
         <DropdownMenuGroup>
           <DropdownMenuItem className="hover:cursor-pointer" asChild>
             <Link href="/dashboard" className="flex items-center">
-              <LayoutGrid className="w-4 h-4 mr-3 text-muted-foreground" />
+              <LayoutGrid className="mr-3 h-4 w-4 text-muted-foreground" />
               Dashboard
             </Link>
           </DropdownMenuItem>
           <DropdownMenuItem className="hover:cursor-pointer" asChild>
             <Link href="/account" className="flex items-center">
-              <User className="w-4 h-4 mr-3 text-muted-foreground" />
+              <User className="mr-3 h-4 w-4 text-muted-foreground" />
               Account
             </Link>
           </DropdownMenuItem>
         </DropdownMenuGroup>
         <DropdownMenuSeparator />
-        <DropdownMenuItem className="hover:cursor-pointer" onClick={() => {}}>
-          <LogOut className="w-4 h-4 mr-3 text-muted-foreground" />
-          Sign out
+        <DropdownMenuItem className="hover:cursor-pointer">
+          <SignoutConfirmation />
+          {/* <LogOut className="mr-3 h-4 w-4 text-muted-foreground" />
+          Sign out */}
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
   );
 }
+
+const SignoutConfirmation = () => {
+  const [open, setOpen] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+
+  const handleSignout = async () => {
+    setIsLoading(true);
+    try {
+      await logout();
+      toast("Signed out successfully");
+    } catch (error) {
+      if (error instanceof Error) {
+        toast(error.message, {
+          icon: <ExclamationTriangleIcon className="h-4 w-4 text-destructive" />,
+        });
+      }
+    } finally {
+      setOpen(false);
+      setIsLoading(false);
+    }
+  };
+
+  return (
+    <AlertDialog open={open} onOpenChange={setOpen}>
+      <AlertDialogTrigger
+        className="px-2 py-1.5 text-sm text-muted-foreground outline-none"
+        asChild
+      >
+        <button>Sign out</button>
+      </AlertDialogTrigger>
+      <AlertDialogContent className="max-w-xs">
+        <AlertDialogHeader>
+          <AlertDialogTitle className="text-center">Sign out from {APP_TITLE}?</AlertDialogTitle>
+          <AlertDialogDescription>You will be redirected to the home page.</AlertDialogDescription>
+        </AlertDialogHeader>
+        <div className="flex flex-col-reverse gap-2 sm:flex-row sm:justify-center">
+          <Button variant="outline" onClick={() => setOpen(false)}>
+            Cancel
+          </Button>
+          <LoadingButton loading={isLoading} onClick={handleSignout}>
+            Continue
+          </LoadingButton>
+        </div>
+      </AlertDialogContent>
+    </AlertDialog>
+  );
+};
