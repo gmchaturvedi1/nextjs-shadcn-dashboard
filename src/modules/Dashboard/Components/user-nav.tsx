@@ -31,7 +31,6 @@ import {
   AlertDialogDescription,
   AlertDialogHeader,
   AlertDialogTitle,
-  AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 
 export function UserNav() {
@@ -108,27 +107,27 @@ const SignoutConfirmation = () => {
   };
 
   return (
-    <AlertDialog open={open} onOpenChange={setOpen}>
-      <AlertDialogTrigger
-        className="px-2 py-1.5 text-sm text-muted-foreground outline-none"
-        asChild
-      >
-        <button>Sign out</button>
-      </AlertDialogTrigger>
-      <AlertDialogContent className="max-w-xs">
-        <AlertDialogHeader>
-          <AlertDialogTitle className="text-center">Sign out from {APP_TITLE}?</AlertDialogTitle>
-          <AlertDialogDescription>You will be redirected to the home page.</AlertDialogDescription>
-        </AlertDialogHeader>
-        <div className="flex flex-col-reverse gap-2 sm:flex-row sm:justify-center">
-          <Button variant="outline" onClick={() => setOpen(false)}>
-            Cancel
-          </Button>
-          <LoadingButton loading={isLoading} onClick={handleSignout}>
-            Continue
-          </LoadingButton>
-        </div>
-      </AlertDialogContent>
-    </AlertDialog>
+    <>
+      {" "}
+      <Button onClick={() => setOpen(true)}>Sign out</Button>
+      <AlertDialog open={open} onOpenChange={setOpen}>
+        <AlertDialogContent className="max-w-xs">
+          <AlertDialogHeader>
+            <AlertDialogTitle className="text-center">Sign out from {APP_TITLE}?</AlertDialogTitle>
+            <AlertDialogDescription>
+              You will be redirected to the home page.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <div className="flex flex-col-reverse gap-2 sm:flex-row sm:justify-center">
+            <Button variant="outline" onClick={() => setOpen(false)}>
+              Cancel
+            </Button>
+            <LoadingButton loading={isLoading} onClick={handleSignout}>
+              Continue
+            </LoadingButton>
+          </div>
+        </AlertDialogContent>
+      </AlertDialog>
+    </>
   );
 };
